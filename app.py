@@ -23,3 +23,26 @@ def query_db(query, args=(), one=False):
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
+
+def home():
+    parts = query_db("SELECT * FROM Parts")
+
+
+    build_ids = session.get("build", [])
+
+
+    build_parts = []
+    total = 0
+
+
+    if build_ids:
+        placeholders = ",".join("?" * len(build_ids))
+        build_parts = query_db(f"SELECT * FROM Parts WHERE Part_ID IN ({placeholders})", build_ids)
+        total = sum(p["Price"] for p in build_parts)
+
+    return render_template("home.html", parts=parts, build_parts=build_parts, total=total)
+
+
+
+if __name__ == '__main__':
+    app.run()
