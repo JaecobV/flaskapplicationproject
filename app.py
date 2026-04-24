@@ -43,7 +43,22 @@ def home():
 
     return render_template("home.html", parts=parts, build_parts=build_parts, total=total)
 
+@app.route("/part/<int:id>")
+def part(id):
+    sql = """
+        SELECT *
+        FROM Parts
+        WHERE Part_ID = ?;
+    """
+    result = query_db(sql, (id,), True)
+    return render_template("part.html", part=result)
 
+@app.route("/add/<int:id>")
+def add_part(id):
+    build = session.get("build", [])
+    build.append(id)
+    session["build"] = build
+    return redirect("/")
 
 if __name__ == '__main__':
     app.run(debug=True)
