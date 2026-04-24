@@ -4,6 +4,7 @@ import sqlite3
 DATABASE = 'pc_parts.db'
 
 app = Flask(__name__)
+app.secret_key = "your_secret_key_here"
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -23,6 +24,11 @@ def query_db(query, args=(), one=False):
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
+
+@app.before_request
+def setup_build():
+    if "build" not in session:
+        session["build"] = []
 
 @app.route('/')
 def home():
@@ -58,6 +64,21 @@ def add_part(id):
     build = session.get("build", [])
     build.append(id)
     session["build"] = build
+    return redirect("/")
+
+@app.route("/remove/<int:id>")
+def remove_part(id):
+    build = session.get("build", [])
+
+    if id in build:
+        build.remove(id)
+
+    session["build"] = build
+    return redirect("/")
+
+@app.route("/reset")
+def reset():
+    session["build"] = []
     return redirect("/")
 
 if __name__ == '__main__':
