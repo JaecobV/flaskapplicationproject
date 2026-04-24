@@ -1,4 +1,4 @@
-from flask import Flask, g
+from flask import Flask, g, render_template, request, redirect, session
 import sqlite3
 
 DATABASE = 'pc_parts.db'
@@ -24,6 +24,7 @@ def query_db(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
+@app.route('/')
 def home():
     parts = query_db("SELECT * FROM Parts")
 
@@ -45,4 +46,4 @@ def home():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
