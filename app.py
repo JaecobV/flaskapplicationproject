@@ -1,4 +1,5 @@
 from flask import Flask, g, render_template, request, redirect, session
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
 DATABASE = 'pc_parts.db'
