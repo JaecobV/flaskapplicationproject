@@ -82,5 +82,17 @@ def reset():
     session["build"] = []
     return redirect("/")
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        email = request.form["email"]
+        password = generate_password_hash(request.form["password"])
+        db = get_db()
+        db.execute("INSERT INTO Users (Username, Email, Password) VALUES (?, ?, ?)",(username, email, password))
+        db.commit()
+        return redirect("/login")
+    return render_template("register.html")
+
 if __name__ == '__main__':
     app.run(debug=True)
