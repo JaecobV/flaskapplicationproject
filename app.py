@@ -94,5 +94,25 @@ def register():
         return redirect("/login")
     return render_template("register.html")
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        user = query_db(
+            "SELECT * FROM Users WHERE Username = ?",
+            (username,),
+            one=True
+        )
+
+        if user and check_password_hash(user["Password"], password):
+            session["user_id"] = user["User_ID"]
+            return redirect("/")
+        else:
+            return "Invalid login"
+
+    return render_template("login.html")
+
 if __name__ == '__main__':
     app.run(debug=True)
