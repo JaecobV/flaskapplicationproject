@@ -38,7 +38,6 @@ def home():
 
     build_ids = session.get("build", [])
 
-
     build_parts = []
     total = 0
 
