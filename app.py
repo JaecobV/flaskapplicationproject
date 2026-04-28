@@ -106,6 +106,15 @@ def login():
             return "Invalid login"
     return render_template("login.html")
 
+@app.route("/dashboard")
+def dashboard():
+    user_id = session.get("user_id")
+
+    if not user_id:
+        return redirect("/login")
+
+    return f"Welcome! Your User ID is {user_id}"
+
 @app.route("/logout")
 def logout():
     session.clear()
