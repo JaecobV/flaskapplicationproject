@@ -106,6 +106,12 @@ def login():
             return "Invalid login"
     return render_template("login.html")
 
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
 @app.route("/dashboard")
 def dashboard():
     user_id = session.get("user_id")
@@ -115,10 +121,14 @@ def dashboard():
 
     return f"Welcome! Your User ID is {user_id}"
 
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/")
+@app.route("/builds")
+def builds():
+    sql = """SELECT Builds.Build_ID, Users.Username, Builds.Total_Cost
+        FROM Builds
+        JOIN Users ON Users.User_ID = Builds.User_ID;"""
+    results = query_db(sql)
+    
+    return render_template("builds.html", results=results)
 
 if __name__ == '__main__':
     app.run(debug=True)

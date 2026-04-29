@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Builds</title>
+</head>
+<body>
+
+<h1>Saved Builds</h1>
+
+{% for row in results %}
+    <div>
+        <p>
+            Build ID: {{ row["Build_ID"] }} |
+            User: {{ row["Username"] }} |
+            Total Cost: ${{ row["Total_Cost"] }}
+        </p>
+    </div>
+{% endfor %}
+
+<br>
+<a href="/">Back to Home</a>
+
+</body>
+</html>
