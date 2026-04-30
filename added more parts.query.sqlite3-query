@@ -1,0 +1,11 @@
+-- database: ./pc_parts.db
+
+SELECT * FROM BuildParts;
+
+INSERT INTO Parts (Part_Name, Category, Price) VALUES
+('MSI B550 Motherboard', 'Motherboard', 220),
+('ASUS Z690 Motherboard', 'Motherboard', 350),
+('Corsair 750W PSU', 'PSU', 180),
+('EVGA 650W PSU', 'PSU', 150),
+('NZXT H510 Case', 'Case', 140),
+('Cooler Master Hyper 212', 'Cooler', 80);
