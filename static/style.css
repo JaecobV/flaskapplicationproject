@@ -17,3 +17,22 @@ body {
     color: black;
     font-weight: bold;
     font-size: 14px;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+.parts-section {
+    width: 70%;
+    padding: 20px;
+}
+
+.build-section {
+    width: 30%;
+    background: #efefef;
+    padding: 25px;
+    border-left: 1px solid #bbb;
+}
