@@ -36,3 +36,44 @@ body {
     padding: 25px;
     border-left: 1px solid #bbb;
 }
+
+.parts-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-content: flex-start;
+}
+
+.card {
+    background: white;
+    width: 250px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    border-radius: 6px;
+}
+
+.card h3 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: none;
+    background: #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background: #bbb;
+}
+
+.build-item {
+    background: #ddd;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+}
