@@ -1,5 +1,5 @@
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     margin: 0;
     background-color: #f5f5f5;
 }
@@ -8,7 +8,8 @@ body {
     background: #d9d9d9;
     padding: 15px;
     display: flex;
-    gap: 25px;
+    gap: 20px;
+    align-items: center;
     border-bottom: 1px solid #aaa;
 }
 
@@ -19,34 +20,46 @@ body {
     font-size: 14px;
 }
 
-.container {
-    display: flex;
-    min-height: 100vh;
+.navbar span {
+    margin-left: auto;
+    font-weight: bold;
 }
 
+.container {
+    display: flex;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: auto;
+}
 
 .parts-section {
     width: 70%;
     padding: 20px;
 }
 
+.parts-section h2 {
+    margin-bottom: 15px;
+}
+
+.parts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
 .build-section {
     width: 30%;
     background: #efefef;
-    padding: 25px;
+    padding: 20px;
     border-left: 1px solid #bbb;
-}
 
-.parts-section {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-content: flex-start;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
 }
-
 .card {
     background: white;
-    width: 250px;
     padding: 15px;
     border: 1px solid #ddd;
     box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
@@ -70,6 +83,7 @@ button {
 button:hover {
     background: #bbb;
 }
+
 .build-item {
     background: #ddd;
     padding: 10px;

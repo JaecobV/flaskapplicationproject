@@ -1,11 +1,11 @@
-from flask import Flask, g, render_template, request, redirect, session
+from flask import Flask, g, render_template, request, redirect, session 
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
 DATABASE = 'pc_parts.db'
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key_here"
+app.secret_key = "sdjkhf8374hf83hf83hf"
 
 def get_db():
     if 'db' not in g:
@@ -32,8 +32,11 @@ def setup_build():
 
 @app.route('/')
 def home():
-    parts = query_db("SELECT * FROM Parts")
-
+    category = request.args.get('category') # Get category from URL
+    if category:
+        parts = query_db("SELECT * FROM Parts WHERE Category = ?", (category,))
+    else:
+        parts = query_db("SELECT * FROM Parts")
 
     build_ids = session.get("build", [])
 
@@ -61,8 +64,7 @@ def part(id):
 @app.route("/add/<int:id>")
 def add_part(id):
     build = session.get("build", [])
-    if id not in build:
-        build.append(id)
+    build.append(id)
     session["build"] = build
     return redirect("/")
 
@@ -88,14 +90,20 @@ def register():
 
         db = get_db()
 
-        try:
-            db.execute(
-                "INSERT INTO Users (Username, Email, Password) VALUES (?, ?, ?)",
-                (username, email, password)
-            )
-            db.commit()
-        except sqlite3.IntegrityError:
-            return "Username already exists"
+        existing_user = query_db(
+            "SELECT * FROM Users WHERE Username = ? OR Email = ?",
+            (username, email),
+            one=True
+        )
+
+        if existing_user:
+            return "Username or Email already taken"
+
+        db.execute(
+            "INSERT INTO Users (Username, Email, Password) VALUES (?, ?, ?)",
+            (username, email, password)
+        )
+        db.commit()
 
         return redirect("/login")
 
@@ -114,7 +122,6 @@ def login():
         else:
             return "Invalid login"
     return render_template("login.html")
-
 
 @app.route("/logout")
 def logout():
@@ -153,13 +160,22 @@ def save_build():
     total = sum(p["Price"] for p in parts)
 
     db = get_db()
-    db.execute(
+
+    # Create build
+    cur = db.execute(
         "INSERT INTO Builds (User_ID, Total_Cost) VALUES (?, ?)",
         (session["user_id"], total)
     )
-    db.commit()
+    build_id = cur.lastrowid
 
-  
+    # Insert parts into BuildParts
+    for part_id in build_ids:
+        db.execute(
+            "INSERT INTO BuildParts (Build_ID, Part_ID) VALUES (?, ?)",
+            (build_id, part_id)
+        )
+
+    db.commit()
     session["build"] = []
 
     return redirect("/dashboard")
