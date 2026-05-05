@@ -8,15 +8,14 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key_here"
 
 def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-        db.row_factory = sqlite3.Row  # allows column names
-    return db
+    if 'db' not in g:
+        g.db = sqlite3.connect(DATABASE, timeout=10)
+        g.db.row_factory = sqlite3.Row
+    return g.db
 
 @app.teardown_appcontext
 def close_connection(exception):
-    db = getattr(g, '_database', None)
+    db = g.pop('db', None)
     if db is not None:
         db.close()
 
@@ -43,7 +42,7 @@ def home():
 
 
     if build_ids:
-        placeholders = ",".join("?" * len(build_ids))
+        placeholders = ",".join(["?"] * len(build_ids))
         build_parts = query_db(f"SELECT * FROM Parts WHERE Part_ID IN ({placeholders})", build_ids)
         total = sum(p["Price"] for p in build_parts)
 
@@ -62,23 +61,22 @@ def part(id):
 @app.route("/add/<int:id>")
 def add_part(id):
     build = session.get("build", [])
-    build.append(id)
+    if id not in build:
+        build.append(id)
     session["build"] = build
     return redirect("/")
 
 @app.route("/remove/<int:id>")
 def remove_part(id):
     build = session.get("build", [])
-
     if id in build:
         build.remove(id)
-
     session["build"] = build
     return redirect("/")
 
 @app.route("/reset")
 def reset():
-    session["build"] = []
+    session.pop("build", None)
     return redirect("/")
 
 @app.route("/register", methods=["GET", "POST"])
@@ -87,10 +85,20 @@ def register():
         username = request.form["username"]
         email = request.form["email"]
         password = generate_password_hash(request.form["password"])
+
         db = get_db()
-        db.execute("INSERT INTO Users (Username, Email, Password) VALUES (?, ?, ?)",(username, email, password))
-        db.commit()
+
+        try:
+            db.execute(
+                "INSERT INTO Users (Username, Email, Password) VALUES (?, ?, ?)",
+                (username, email, password)
+            )
+            db.commit()
+        except sqlite3.IntegrityError:
+            return "Username already exists"
+
         return redirect("/login")
+
     return render_template("register.html")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -101,6 +109,7 @@ def login():
         user = query_db("SELECT * FROM Users WHERE Username = ?", (username,), one=True)
         if user and check_password_hash(user["Password"], password):
             session["user_id"] = user["User_ID"]
+            session["username"] = user["Username"]
             return redirect("/")
         else:
             return "Invalid login"
@@ -114,21 +123,58 @@ def logout():
 
 @app.route("/dashboard")
 def dashboard():
-    user_id = session.get("user_id")
-
-    if not user_id:
+    if "user_id" not in session:
         return redirect("/login")
 
-    return f"Welcome! Your User ID is {user_id}"
+    builds = query_db(
+        "SELECT * FROM Builds WHERE User_ID = ?",
+        (session["user_id"],)
+    )
+
+    return render_template("dashboard.html", builds=builds, username=session["username"])
+
+@app.route("/save_build")
+def save_build():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    build_ids = session.get("build", [])
+
+    if not build_ids:
+        return "No build to save"
+
+    placeholders = ",".join(["?"] * len(build_ids))
+
+    parts = query_db(
+        f"SELECT * FROM Parts WHERE Part_ID IN ({placeholders})",
+        build_ids
+    )
+
+    total = sum(p["Price"] for p in parts)
+
+    db = get_db()
+    db.execute(
+        "INSERT INTO Builds (User_ID, Total_Cost) VALUES (?, ?)",
+        (session["user_id"], total)
+    )
+    db.commit()
+
+  
+    session["build"] = []
+
+    return redirect("/dashboard")
 
 @app.route("/builds")
 def builds():
-    sql = """SELECT Builds.Build_ID, Users.Username, Builds.Total_Cost
+    results = query_db("""
+        SELECT Builds.Build_ID, Users.Username, Builds.Total_Cost
         FROM Builds
-        JOIN Users ON Users.User_ID = Builds.User_ID;"""
-    results = query_db(sql)
+        JOIN Users ON Users.User_ID = Builds.User_ID
+    """)
     
     return render_template("builds.html", results=results)
 
+
+# ALWAYS LAST
 if __name__ == '__main__':
     app.run(debug=True)

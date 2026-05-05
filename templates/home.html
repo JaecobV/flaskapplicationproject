@@ -59,6 +59,14 @@
 
     <h3>Total: ${{ total }}</h3>
 
+{% if session.get("user_id") %}
+    <a href="/save_build">
+        <button>Save Build</button>
+    </a>
+{% else %}
+    <p><a href="/login">Log in</a> to save your build</p>
+{% endif %}
+
     <a href="/reset">
         <button>Reset Build</button>
     </a>
@@ -67,3 +75,4 @@
 
 </body>
 </html>
+

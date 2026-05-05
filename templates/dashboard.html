@@ -1,0 +1,10 @@
+<h2>{{ username }}'s Builds</h2>
+
+{% for build in builds %}
+    <div>
+        <p>Build ID: {{ build["Build_ID"] }}</p>
+        <p>Total Cost: ${{ build["Total_Cost"] }}</p>
+    </div>
+{% else %}
+    <p>No builds saved yet.</p>
+{% endfor %}
