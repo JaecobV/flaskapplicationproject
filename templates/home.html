@@ -9,20 +9,27 @@
 
 <!-- NAVBAR -->
 <div class="navbar">   
-    <a href="/builds">Builds</a>
 
-    {% if session.get("user_id") %}
-        <a href="/logout">Logout</a>
-    {% else %}
-        <a href="/login">Login</a>  
-        <a href="/register">Register</a>
-    {% endif %}
+    <div class="logo"></div>
 
     <a href="/">Home</a>
+    <a href="/?category=GPU">GPU</a>
+    <a href="/?category=CPU">CPU</a>
+    <a href="/?category=Motherboard">Motherboard</a>
+    <a href="/?category=RAM">RAM</a>
+    <a href="/?category=Storage">Storage</a>
+    <a href="/?category=PSU">PSU</a>
+
+    <div class="nav-right">
+        <a href="/builds">Builds</a>
 
     {% if session.get("username") %}
-        <span style="margin-left:auto;">Welcome {{ session["username"] }}</span>
-    {% endif %}
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
 </div>
 
 
@@ -30,15 +37,39 @@
 
     <div class="parts-section">
 
+        <div class="search-bar">
+            <input type="text" placeholder="Search by Part Name or Keyword">
+        </div>
+
         <h2>Available Parts</h2>
 
+        <div class="filters">
+            <div>
+                <label>Sort By:</label>
+                <input type="range">
+            </div>
+
+            <div>
+                <label>Price Range:</label>
+                <input type="range">
+            </div>
+        </div>
+
         <div class="parts-grid">
+            
             {% for part in parts %}
             <div class="card">
+                
+                
+                <div class="circle"></div>
+
                 <h3>{{ part["Part_Name"] }}</h3>
-                <p><strong>Category:</strong> {{ part["Category"] }}</p>
-                <p><strong>Brand:</strong> {{ part["Part_Name"].split()[0] }}</p>
-                <p><strong>Price:</strong> ${{ part["Price"] }}</p>
+
+                <p>{{ part["Category"] }}</p>
+
+                <hr>
+
+                <p>${{ part["Price"] }}</p>
 
                 <a href="{{ url_for('add_part', id=part['Part_ID']) }}">
                     <button>Add to Build</button>
@@ -50,25 +81,39 @@
     </div>
 
     <div class="build-section">
+        
         <h2>Your Current Build</h2>
 
         {% for part in build_parts %}
         <div class="build-item">
-            {{ part["Part_Name"] }} (${{ part["Price"] }})
+           
+            <div>
+                {{ part["Category"] }}:
+                {{ part["Part_Name"] }}
+            </div>
+
             <a href="{{ url_for('remove_part', id=part['Part_ID']) }}">
                 <button>Remove</button>
             </a>
+                </div>
+                {% endfor %}
+
+                <h3>Total Est. Price:</h3>
+
+                <h2>${{ total }}</h2>
+
+                {% if session.get("user_id") %}
+                    <a href="/save_build">
+                        <button class="save-btn">Save Build</button>
+                    </a>
+                {% endif %}
+
+                <a href="/reset">
+                    <button class="reset-btn">Reset Build</button>
+                </a>
+
         </div>
-        {% endfor %}
 
-        <h3>Total: ${{ total }}</h3>
-    </div>
-
-</div>
-    <a href="/reset">
-        <button>Reset Build</button>
-    </a>
-</div>
 </div>
 
 </body>
