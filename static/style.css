@@ -1,15 +1,17 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    background-color: #f5f5f5;
+    background: #f3f3f3;
 }
 
 .navbar {
-    background: #d9d9d9;
-    padding: 15px;
     display: flex;
-    gap: 20px;
     align-items: center;
+    gap: 30px;
+
+    background: #d9d9d9;
+    padding: 15px 25px;
+
     border-bottom: 1px solid #aaa;
 }
 
@@ -20,25 +22,49 @@ body {
     font-size: 14px;
 }
 
-.navbar span {
+.nav-right {
     margin-left: auto;
-    font-weight: bold;
+    display: flex;
+    gap: 20px;
+}
+
+.logo {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
 }
 
 .container {
     display: flex;
-    align-items: flex-start;
-    max-width: 1200px;
-    margin: auto;
+    position: sticky;
+    top: 0;
+    height: 100vh;
 }
 
 .parts-section {
     width: 70%;
-    padding: 20px;
+    padding: 25px;
 }
 
-.parts-section h2 {
-    margin-bottom: 15px;
+.search-bar input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #ddd;
+    margin-bottom: 20px;
+}
+
+.filters {
+    display: flex;
+    gap: 60px;
+    margin-bottom: 25px;
+}
+
+.filters label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .parts-grid {
@@ -47,45 +73,74 @@ body {
     gap: 20px;
 }
 
-.build-section {
-    width: 30%;
-    background: #efefef;
-    padding: 20px;
-    border-left: 1px solid #bbb;
-
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-}
 .card {
-    background: white;
-    padding: 15px;
-    border: 1px solid #ddd;
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-    border-radius: 6px;
+    background: #ddd;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: gray;
+    margin-bottom: 10px;
 }
 
 .card h3 {
     margin-top: 0;
-    font-size: 18px;
+    font-size: 16px;
 }
 
-button {
-    margin-top: 10px;
-    padding: 8px 12px;
-    border: none;
-    background: #ccc;
-    cursor: pointer;
-    border-radius: 4px;
+.card p {
+    margin: 8px 0;
 }
 
-button:hover {
-    background: #bbb;
+.card button {
+    float: right;
+}
+
+.build-section {
+    width: 30%;
+    background: #efefef;
+    padding: 25px;
+
+    border-left: 1px solid #bbb;
+
+    position: sticky;
+    top: 0;
+
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.build-section h2 {
+    margin-top: 0;
 }
 
 .build-item {
     background: #ddd;
+    padding: 12px;
+    margin-bottom: 15px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+button {
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    background: #bbb;
+}
+
+button:hover {
+    background: #999;
+}
+
+.build-item {
+    background: #999;
     padding: 10px;
     margin: 10px 0;
     border-radius: 4px;

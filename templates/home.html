@@ -7,10 +7,11 @@
 <body>
 
 
-<!-- NAVBAR -->
-<div class="navbar">   
+<div class="navbar">
 
-    <div class="logo"></div>
+    <div class="part-image">
+        <img src="{{ url_for('static', filename='images/' + part['Image']) }}" alt="Part Image">
+    </div>
 
     <a href="/">Home</a>
     <a href="/?category=GPU">GPU</a>
@@ -21,16 +22,20 @@
     <a href="/?category=PSU">PSU</a>
 
     <div class="nav-right">
+
         <a href="/builds">Builds</a>
 
-    {% if session.get("username") %}
+        {% if session.get("user_id") %}
             <a href="/dashboard">Dashboard</a>
             <a href="/logout">Logout</a>
         {% else %}
             <a href="/login">Login</a>
             <a href="/register">Register</a>
         {% endif %}
-</div>
+
+    </div>
+
+</div>  
 
 
 <div class="container">

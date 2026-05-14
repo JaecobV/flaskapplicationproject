@@ -63,9 +63,36 @@ def part(id):
 
 @app.route("/add/<int:id>")
 def add_part(id):
+
+    part = query_db(
+        "SELECT * FROM Parts WHERE Part_ID = ?",
+        (id,),
+        one=True
+    )
+
     build = session.get("build", [])
+
+    existing_parts = []
+
+    if build:
+        placeholders = ",".join(["?"] * len(build))
+
+        existing_parts = query_db(
+            f"SELECT * FROM Parts WHERE Part_ID IN ({placeholders})",
+            build
+        )
+
+    for p in existing_parts:
+
+        if (
+            p["Category"] == part["Category"]
+            and part["Category"] != "RAM"
+        ):
+            return "You already added this category"
+        
     build.append(id)
     session["build"] = build
+
     return redirect("/")
 
 @app.route("/remove/<int:id>")
