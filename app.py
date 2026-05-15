@@ -70,30 +70,31 @@ def add_part(id):
         one=True
     )
 
+    if not part:
+        return "Part not found"
+
     build = session.get("build", [])
 
     existing_parts = []
 
     if build:
         placeholders = ",".join(["?"] * len(build))
-
         existing_parts = query_db(
             f"SELECT * FROM Parts WHERE Part_ID IN ({placeholders})",
             build
         )
 
-    for p in existing_parts:
+    single_categories = ["CPU", "GPU", "Motherboard", "PSU"]
 
-        if (
-            p["Category"] == part["Category"]
-            and part["Category"] != "RAM"
-        ):
-            return "You already added this category"
-        
+    for p in existing_parts:
+        if p["Category"] == part["Category"] and part["Category"] in single_categories:
+            return "You already added one of this category"
+
     build.append(id)
     session["build"] = build
 
     return redirect("/")
+
 
 @app.route("/remove/<int:id>")
 def remove_part(id):
