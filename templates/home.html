@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>PC Builder</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
 
 <!-- NAVBAR -->
+
 <div class="navbar">
+
+    <div class="logo"></div>
 
     <a href="/">Home</a>
     <a href="/?category=GPU">GPU</a>
@@ -17,90 +23,127 @@
     <a href="/?category=Storage">Storage</a>
     <a href="/?category=PSU">PSU</a>
 
-    <div class="nav-right">
-        <a href="/builds">Builds</a>
-
-        {% if session.get("user_id") %}
-            <a href="/dashboard">Dashboard</a>
-            <a href="/logout">Logout</a>
-        {% else %}
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
-        {% endif %}
-    </div>
-
 </div>
 
+<!-- MAIN -->
 
-<!-- MAIN CONTAINER -->
 <div class="container">
 
-    <!-- LEFT: PARTS -->
+    <!-- LEFT SIDE -->
+
     <div class="parts-section">
 
+        <!-- SEARCH -->
+
         <div class="search-bar">
-            <input type="text" placeholder="Search by Part Name or Keyword">
+
+            <form method="GET" action="/">
+
+                {% if request.args.get('category') %}
+                <input
+                    type="hidden"
+                    name="category"
+                    value="{{ request.args.get('category') }}"
+                >
+                {% endif %}
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search by Part Name or Keyword"
+                >
+
+            </form>
+
         </div>
 
         <h2>Available Parts</h2>
 
+        <!-- FILTERS -->
+
+        <div class="filters">
+
+            <div>
+                <label>Sort By:</label>
+                <input type="range">
+            </div>
+
+            <div>
+                <label>Price Range:</label>
+                <input type="range">
+            </div>
+
+        </div>
+
+        <!-- PARTS -->
+
         <div class="parts-grid">
 
             {% for part in parts %}
+
             <div class="card">
 
-                <img src="{{ part['Image'] }}" alt="Part Image">
+                <img src="{{ part['Image'] }}">
 
-                <div class="circle"></div>
+                <div class="part-info">
 
-                <h3>{{ part["Part_Name"] }}</h3>
-                <p>{{ part["Category"] }}</p>
+                    <div class="circle"></div>
 
-                <hr>
+                    <div class="text">
 
-                <p>${{ part["Price"] }}</p>
+                        <h3>{{ part["Part_Name"] }}</h3>
+
+                        <p>{{ part["Category"] }}</p>
+
+                        <hr>
+
+                        <p>${{ part["Price"] }}</p>
+
+                    </div>
+
+                </div>
 
                 <a href="{{ url_for('add_part', id=part['Part_ID']) }}">
                     <button>Add to Build</button>
                 </a>
 
             </div>
+
             {% endfor %}
 
         </div>
+
     </div>
 
+    <!-- RIGHT SIDE -->
 
-    <!-- RIGHT: BUILD -->
     <div class="build-section">
 
-        <h2>Your Current Build</h2>
+        <h2>Your Current Build:</h2>
+
+        <hr>
 
         {% for part in build_parts %}
+
         <div class="build-item">
 
-            <div>
-                {{ part["Category"] }}: {{ part["Part_Name"] }}
-            </div>
+            {{ part["Category"] }}:
+            {{ part["Part_Name"] }}
 
             <a href="{{ url_for('remove_part', id=part['Part_ID']) }}">
                 <button>Remove</button>
             </a>
 
         </div>
+
         {% endfor %}
 
-        <h3>Total Est. Price:</h3>
-        <h2>${{ total }}</h2>
+        <h2>Total Est. Price:</h2>
 
-        {% if session.get("user_id") %}
-        <a href="/save_build">
-            <button class="save-btn">Save Build</button>
-        </a>
-        {% endif %}
+        <h1>${{ total }}</h1>
 
         <a href="/reset">
-            <button class="reset-btn">Reset Build</button>
+            <button>Reset Build</button>
         </a>
 
     </div>

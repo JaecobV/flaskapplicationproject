@@ -1,15 +1,18 @@
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
+    font-family: Arial, sans-serif;
     background: #f3f3f3;
 }
+
+/* NAVBAR */
 
 .navbar {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 35px;
 
     background: #d9d9d9;
+
     padding: 15px 25px;
 
     border-bottom: 1px solid #aaa;
@@ -22,43 +25,52 @@ body {
     font-size: 14px;
 }
 
-.nav-right {
-    margin-left: auto;
-    display: flex;
-    gap: 20px;
-}
-
 .logo {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
+
     border-radius: 50%;
+
     background: white;
 }
 
+/* MAIN LAYOUT */
+
 .container {
     display: flex;
-    position: sticky;
-    top: 0;
-    height: 100vh;
+    min-height: 100vh;
 }
+
+/* LEFT SIDE */
 
 .parts-section {
     width: 70%;
     padding: 25px;
 }
 
+/* SEARCH */
+
+.search-bar {
+    margin-bottom: 25px;
+}
+
 .search-bar input {
     width: 100%;
+
     padding: 12px;
+
     border: none;
+
     background: #ddd;
-    margin-bottom: 20px;
 }
+
+/* FILTERS */
 
 .filters {
     display: flex;
-    gap: 60px;
-    margin-bottom: 25px;
+    gap: 80px;
+
+    margin-bottom: 30px;
 }
 
 .filters label {
@@ -67,60 +79,96 @@ body {
     font-weight: bold;
 }
 
+/* GRID */
+
 .parts-grid {
     display: grid;
+
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+
+    gap: 25px;
 }
+
+/* CARD */
 
 .card {
     background: #ddd;
-    padding: 20px;
+
+    padding: 15px;
+
     border-radius: 4px;
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+
+    object-fit: contain;
+
+    background: white;
+
+    margin-bottom: 15px;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+
+    transition: 0.2s;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.part-info {
+    display: flex;
+    gap: 15px;
 }
 
 .circle {
     width: 30px;
     height: 30px;
+
     border-radius: 50%;
+
     background: gray;
-    margin-bottom: 10px;
+
+    margin-top: 5px;
 }
 
-.card h3 {
-    margin-top: 0;
+.text {
+    flex: 1;
+}
+
+.text h3 {
+    margin: 0;
     font-size: 16px;
 }
 
-.card p {
+.text p {
     margin: 8px 0;
 }
 
 .card button {
+    margin-top: 10px;
     float: right;
 }
 
+/* RIGHT SIDE */
+
 .build-section {
     width: 30%;
+
     background: #efefef;
+
     padding: 25px;
 
     border-left: 1px solid #bbb;
-
-    position: sticky;
-    top: 0;
-
-    height: 100vh;
-    overflow-y: auto;
-}
-
-.build-section h2 {
-    margin-top: 0;
 }
 
 .build-item {
     background: #ddd;
+
     padding: 12px;
+
     margin-bottom: 15px;
 
     display: flex;
@@ -128,20 +176,18 @@ body {
     align-items: center;
 }
 
+/* BUTTONS */
+
 button {
     border: none;
+
     padding: 8px 12px;
+
     cursor: pointer;
+
     background: #bbb;
 }
 
 button:hover {
     background: #999;
-}
-
-.build-item {
-    background: #999;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 4px;
 }

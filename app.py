@@ -32,24 +32,46 @@ def setup_build():
 
 @app.route('/')
 def home():
-    category = request.args.get('category') # Get category from URL
+
+    category = request.args.get('category')
+    search = request.args.get('search')
+
+    sql = "SELECT * FROM Parts WHERE 1=1"
+    values = []
+
+    # Category filter
     if category:
-        parts = query_db("SELECT * FROM Parts WHERE Category = ?", (category,))
-    else:
-        parts = query_db("SELECT * FROM Parts")
+        sql += " AND Category = ?"
+        values.append(category)
+
+    # Search filter
+    if search:
+        sql += " AND Part_Name LIKE ?"
+        values.append("%" + search + "%")
+
+    parts = query_db(sql, values)
 
     build_ids = session.get("build", [])
 
     build_parts = []
     total = 0
 
-
     if build_ids:
         placeholders = ",".join(["?"] * len(build_ids))
-        build_parts = query_db(f"SELECT * FROM Parts WHERE Part_ID IN ({placeholders})", build_ids)
+
+        build_parts = query_db(
+            f"SELECT * FROM Parts WHERE Part_ID IN ({placeholders})",
+            build_ids
+        )
+
         total = sum(p["Price"] for p in build_parts)
 
-    return render_template("home.html", parts=parts, build_parts=build_parts, total=total)
+    return render_template(
+        "home.html",
+        parts=parts,
+        build_parts=build_parts,
+        total=total
+    )
 
 @app.route("/part/<int:id>")
 def part(id):
